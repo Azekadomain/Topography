@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Масштаб</title>
+<link rel="icon" href="../assets/images/logo.png" type="image/png">
+
+<style>
+:root {
+  --bg: #0d1b0d;
+  --card: #1a2b1a;
+  --accent: #9acd32;
+  --accent-2: #6b8e23;
+  --muted: #a0a8a0;
+  --ink: #f3f4f6;
+  --brand-2: #6b8e23;
+  --border: #6b7280;
+  --radius: 10px;
+  --shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+* {
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: var(--ink);
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card);
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--accent-2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+main {
+  padding: 16px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  border: 2px solid var(--brand-2);
+  margin-bottom: 20px;
+}
+.label {
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+.field label {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.field input {
+  width: 100%;
+  padding: 10px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  outline: none;
+  background: #1f2937;
+  color: var(--ink);
+  font-size: 15px;
+}
+.field input:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(107,142,35,0.4);
+}
+button, .back {
+  background: var(--accent-2);
+  color: white;
+  border: 0;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+button:hover, .back:hover {
+  background: var(--accent);
+}
+.result {
+  margin-top: 14px;
+  background: #2f3b2f;
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px dashed var(--brand-2);
+  color: #d1fae5;
+}
+.result .k {
+  color: var(--muted);
+}
+.result .v {
+  font-weight: 700;
+}
+canvas {
+  display: block;
+  margin: 16px auto;
+  background: #1a2b1a;
+  border: 2px solid var(--accent-2);
+  border-radius: var(--radius);
+  cursor: crosshair;
+}
+.coord {
+  margin-top: 10px;
+  color: var(--accent-2);
+  font-weight: 600;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+<header class="site-header small">
+  <button class="back" onclick="location.href='index.html'">← Практика</button>
+  <h1>Масштаб и координаты</h1>
+</header>
+
+<main>
+
+
+  <section class="card">
+    <div class="label">Конвертер масштаба</div>
+    <div class="field">
+      <label for="scale-input">Введите масштаб (например, 1000 для 1:1000)</label>
+      <input type="number" id="scale-input" placeholder="Масштаб" min="1" />
+    </div>
+    <div class="field">
+      <label for="cm-input">Введите длину на карте в сантиметрах</label>
+      <input type="number" id="cm-input" placeholder="см" min="0" />
+    </div>
+    <button id="convert-btn" type="button">Конвертировать в км</button>
+    <div class="result">
+      <span class="k">Реальное расстояние:</span> <span class="v" id="result">—</span>
+    </div>
+  </section>
+
+
+  <section class="card">
+    <div class="label">Выберите две точки на карте</div>
+    <canvas id="map" width="500" height="500"></canvas>
+    <div class="coord" id="scale-text">Масштаб: 1:50000</div>
+    <button id="new-task">Новые точки</button>
+  </section>
+
+
+  <section class="card">
+    <div class="label">Калькулятор расстояния (в см)</div>
+    <div class="field">
+      <label>Введите координаты точек (X1, X2, Y1, Y2)</label>
+      <input id="x1" type="number" placeholder="X1 (вертикальная)" />
+      <input id="x2" type="number" placeholder="X2 (вертикальная)" />
+      <input id="y1" type="number" placeholder="Y1 (горизонтальная)" />
+      <input id="y2" type="number" placeholder="Y2 (горизонтальная)" />
+    </div>
+    <button id="calc-btn">Рассчитать расстояние</button>
+    <div class="result"><span class="k">Расстояние между точками:</span> <span class="v" id="distance">—</span></div>
+  </section>
+
+</main>
+
+<script>
+
+const scaleInput = document.getElementById('scale-input');
+const cmInput = document.getElementById('cm-input');
+const convertBtn = document.getElementById('convert-btn');
+const resultEl = document.getElementById('result');
+
+convertBtn.addEventListener('click', () => {
+  const scale = parseFloat(scaleInput.value);
+  const cm = parseFloat(cmInput.value);
+  if (!scale || scale <= 0) { alert('Введите корректный масштаб!'); return; }
+  if (!cm || cm < 0) { alert('Введите корректную длину на карте!'); return; }
+
+  const realMeters = (cm * scale) / 100;
+  const realKm = realMeters / 1000;
+  resultEl.textContent = `${realKm.toFixed(2)} км`;
+});
+
+
+const canvas = document.getElementById('map');
+const ctx = canvas.getContext('2d');
+const mapSize = canvas.width;
+const gridStep = 50;
+let points = [];
+let selected = [];
+
+function generatePoints() {
+  points = [];
+  const cells = mapSize / gridStep;
+  for (let i = 0; i < 10; i++) {
+    const gx = Math.floor(Math.random() * cells);
+    const gy = Math.floor(Math.random() * cells);
+    points.push({ x: gx * gridStep, y: gy * gridStep });
+  }
+
+  const scales = [1000, 2000, 5000, 10000, 20000, 25000, 50000, 60000, 75000, 100000, 125000, 150000];
+  function randomScale() {
+    const scale = scales[Math.floor(Math.random() * scales.length)];
+    document.getElementById('scale-text').textContent = `Масштаб: 1:${scale}`;
+    return scale;
+  }
+
+  document.getElementById('new-task').addEventListener('click', () => {
+    randomScale();
+    generatePoints();
+    selected = [];
+    drawMap();
+    updateCoords();
+  });
+
+
+}
+
+function drawMap() {
+  ctx.clearRect(0, 0, mapSize, mapSize);
+  ctx.strokeStyle = '#3b5e3b';
+  for (let i = 0; i <= mapSize; i += gridStep) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0); ctx.lineTo(i, mapSize); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, i); ctx.lineTo(mapSize, i); ctx.stroke();
+  }
+
+  points.forEach((p, i) => {
+    ctx.fillStyle = selected.includes(i) ? '#9acd32' : '#10b981';
+    ctx.beginPath();
+    ctx.arc(p.y, p.x, 6, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  if (selected.length === 2) {
+    ctx.strokeStyle = '#f3f4f6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(points[selected[0]].y, points[selected[0]].x);
+    ctx.lineTo(points[selected[1]].y, points[selected[1]].x);
+    ctx.stroke();
+    ctx.lineWidth = 1;
+  }
+}
+
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  let closest = -1;
+  let minDist = 10;
+  points.forEach((p, i) => {
+    const d = Math.hypot(p.y - mx, p.x - my);
+    if (d < minDist) { minDist = d; closest = i; }
+  });
+  if (closest !== -1) {
+    if (selected.includes(closest)) selected = selected.filter(x => x !== closest);
+    else if (selected.length < 2) selected.push(closest);
+    drawMap();
+    updateCoords();
+  }
+});
+
+
+document.getElementById('new-task').addEventListener('click', () => {
+  generatePoints();
+  selected = [];
+  drawMap();
+  updateCoords();
+});
+
+
+document.getElementById('calc-btn').addEventListener('click', () => {
+  const x1 = parseFloat(document.getElementById('x1').value);
+  const x2 = parseFloat(document.getElementById('x2').value);
+  const y1 = parseFloat(document.getElementById('y1').value);
+  const y2 = parseFloat(document.getElementById('y2').value);
+
+  if (isNaN(x1) || isNaN(x2) || isNaN(y1) || isNaN(y2)) {
+    alert('Введите все координаты!');
+    return;
+  }
+  const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+  document.getElementById('distance').textContent = `${distance.toFixed(2)} см`;
+});
+
+
+generatePoints();
+drawMap();
+</script>
+
+</body>
+</html>

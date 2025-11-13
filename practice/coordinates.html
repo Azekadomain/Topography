@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Конвертер координат</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="icon" href="../assets/images/logo.png" type="image/png">
+
+<style>
+:root {
+  --bg: #0d1b0d;
+  --card: #1a2b1a;
+  --accent: #9acd32;
+  --accent-2: #6b8e23;
+  --muted: #a0a8a0;
+  --radius: 10px;
+  --pad: 18px;
+  --ink: #f3f4f6;
+  --brand: #4b5320;
+  --brand-2: #6b8e23;
+  --shadow: 0 2px 6px rgba(0,0,0,0.5);
+  --border: #6b7280;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card);
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--accent-2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+main {
+  padding: 16px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--pad);
+  border: 2px solid var(--brand-2);
+  margin-bottom: 20px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.field label {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.field input {
+  width: 100%;
+  padding: 10px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  outline: none;
+  background: #1f2937;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.field input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(107,142,35,0.4);
+}
+
+.copy-row {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.copy-btn {
+  display: inline-block;
+  background: var(--brand-2);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 6px;
+  color: #111827;
+  cursor: pointer;
+  font-weight: 700;
+  text-align: center;
+  transition: background .2s, transform .1s;
+}
+
+.copy-btn:hover {
+  background: var(--accent);
+  transform: scale(1.05);
+}
+
+canvas {
+  width: 100%;
+  height: 260px;
+  background: #182618;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+</style>
+</head>
+<body>
+<header>
+  <button class="back" onclick="location.href='index.html'">← Практика</button>
+  <h1>Конвертер координат</h1>
+</header>
+
+<main>
+
+
+  <section class="card">
+    <h2 style="margin-top:0; margin-bottom:15px;">Конвертер координат</h2>
+
+    <div class="field">
+      <label>Введите координату (например: 43.123456)</label>
+      <input type="text" id="coordInput" placeholder="43.123456">
+    </div>
+
+
+
+    <div class="field">
+      <label>ГГ°ММ.МММ'</label>
+      <div class="copy-row">
+        <input type="text" id="degMinOutput" readonly>
+        <button class="copy-btn" data-target="degMinOutput">COPY</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>ГГ°ММ'СС''</label>
+      <div class="copy-row">
+        <input type="text" id="degMinSecOutput" readonly>
+        <button class="copy-btn" data-target="degMinSecOutput">COPY</button>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="card">
+    <h2>Обратный пересчёт</h2>
+    <div class="field">
+      <label>Введите градусы, минуты, секунды</label>
+      <input type="text" id="reverseInput" placeholder="например: 43 07 24.4">
+    </div>
+    <div class="field">
+      <label>Результат</label>
+      <input type="text" id="reverseOutput" readonly>
+    </div>
+  </section>
+
+
+  <section class="card">
+    <h2>Разность и сумма углов</h2>
+    <div class="field">
+      <label>Угол 1 (в градусах)</label>
+      <input type="number" id="angle1" placeholder="например: 45.25">
+    </div>
+    <div class="field">
+      <label>Угол 2 (в градусах)</label>
+      <input type="number" id="angle2" placeholder="например: 10.5">
+    </div>
+    <div class="field">
+      <button class="copy-btn" onclick="calcAngleDiff()">Разность</button>
+      <button class="copy-btn" onclick="calcAngleSum()">Сумма</button>
+    </div>
+    <div class="field">
+      <label>Результат</label>
+      <input type="text" id="angleResult" readonly>
+    </div>
+  </section>
+
+
+  <section class="card">
+      <header>
+        <h1>Визуализатор углов</h1>
+        <button onclick="resetCanvas()">Сбросить</button>
+      </header>
+
+      <canvas id="canvas"></canvas>
+      <div class="info" id="info">
+        Кликните 3 точки, чтобы построить угол.<br>
+        (точка A → вершина B → точка C)
+      </div>
+
+  </section>
+
+</main>
+
+<script>
+
+function convertCoords() {
+  const input = parseFloat(document.getElementById("coordInput").value);
+  if (isNaN(input)) return;
+
+  const deg = Math.floor(input);
+  const min = (input - deg) * 60;
+  document.getElementById("degMinOutput").value = `${deg}° ${min.toFixed(3)}′`;
+
+  const min2 = Math.floor(min);
+  const sec = (min - min2) * 60;
+  document.getElementById("degMinSecOutput").value = `${deg}° ${min2}′ ${sec.toFixed(2)}″`;
+}
+document.getElementById("coordInput").addEventListener("input", convertCoords);
+
+
+function reverseConvert() {
+  const val = document.getElementById("reverseInput").value.trim().split(" ");
+  if (val.length < 2) return;
+  const deg = parseFloat(val[0]) || 0;
+  const min = parseFloat(val[1]) || 0;
+  const sec = parseFloat(val[2]) || 0;
+  const result = deg + min/60 + sec/3600;
+  document.getElementById("reverseOutput").value = result.toFixed(6);
+}
+document.getElementById("reverseInput").addEventListener("input", reverseConvert);
+
+
+function calcAngleDiff() {
+  const a1 = parseFloat(document.getElementById("angle1").value);
+  const a2 = parseFloat(document.getElementById("angle2").value);
+  if (isNaN(a1) || isNaN(a2)) return;
+  let diff = a1 - a2;
+  if (diff < 0) diff += 360;
+  document.getElementById("angleResult").value = diff.toFixed(4) + "°";
+}
+
+function calcAngleSum() {
+  const a1 = parseFloat(document.getElementById("angle1").value);
+  const a2 = parseFloat(document.getElementById("angle2").value);
+  if (isNaN(a1) || isNaN(a2)) return;
+  let sum = a1 + a2;
+  if (sum >= 360) sum -= 360;
+  document.getElementById("angleResult").value = sum.toFixed(4) + "°";
+}
+
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+
+
+let points = [];
+let dragging = null;
+
+canvas.addEventListener("mousedown", e => {
+  const pos = { x: e.offsetX, y: e.offsetY };
+  const existing = points.find(p => distance(p, pos) < 10);
+  if (existing) {
+    dragging = existing;
+  } else if (points.length < 3) {
+    points.push(pos);
+  }
+  draw();
+});
+
+canvas.addEventListener("mousemove", e => {
+  if (dragging) {
+    dragging.x = e.offsetX;
+    dragging.y = e.offsetY;
+    draw();
+  }
+});
+
+canvas.addEventListener("mouseup", () => dragging = null);
+
+function distance(p1, p2) {
+  return Math.sqrt((p1.x-p2.x)**2 + (p1.y-p2.y)**2);
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#9acd32";
+  ctx.fillStyle = "#cde8a8";
+
+  for (let p of points) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 6, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  if (points.length >= 2) {
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    ctx.lineTo(points[1].x, points[1].y);
+    ctx.stroke();
+  }
+  if (points.length === 3) {
+    ctx.beginPath();
+    ctx.moveTo(points[1].x, points[1].y);
+    ctx.lineTo(points[2].x, points[2].y);
+    ctx.stroke();
+
+    const angle = getAngle(points[0], points[1], points[2]);
+    const deg = (angle * 180 / Math.PI).toFixed(2);
+    const dir = deg < 90 ? "острый" : deg > 90 && deg < 180 ? "тупой" : "прямой";
+    document.getElementById("info").innerHTML =
+      `Угол: ${deg}° (${dir})<br>
+      Перетаскивайте точки для изменения.`;
+
+    drawArc(points[0], points[1], points[2], angle);
+  } else {
+    document.getElementById("info").innerHTML =
+      `Выберите 3 точки, чтобы построить угол.`;
+  }
+}
+
+function getAngle(A, B, C) {
+  const AB = {x: A.x - B.x, y: A.y - B.y};
+  const CB = {x: C.x - B.x, y: C.y - B.y};
+  const dot = AB.x * CB.x + AB.y * CB.y;
+  const magA = Math.sqrt(AB.x**2 + AB.y**2);
+  const magC = Math.sqrt(CB.x**2 + CB.y**2);
+  return Math.acos(dot / (magA * magC));
+}
+
+function drawArc(A, B, C, angle) {
+  const radius = 50;
+  const v1 = Math.atan2(A.y - B.y, A.x - B.x);
+  const v2 = Math.atan2(C.y - B.y, C.x - B.x);
+  ctx.beginPath();
+  ctx.arc(B.x, B.y, radius, v1, v2, false);
+  ctx.strokeStyle = "#fffa70";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+function resetCanvas() {
+  points = [];
+  draw();
+}
+draw();
+
+
+
+
+document.querySelectorAll(".copy-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const targetId = btn.getAttribute("data-target");
+    if (!targetId) return;
+    const el = document.getElementById(targetId);
+    el.select();
+    document.execCommand("copy");
+    btn.textContent = "OK!";
+    setTimeout(()=>btn.textContent="COPY", 1000);
+  });
+});
+</script>
+</body>
+</html>

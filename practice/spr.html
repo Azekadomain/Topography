@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Справочник: Азимут-мастер — что и как вписывать</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/images/logo.png" type="image/png">
+  <style>
+    /* :root{
+      --bg:#0f1720;
+      --card:#122027;
+      --accent:#d6f35a;
+      --muted:#bfc9c6;
+      --glass: rgba(255,255,255,0.03);
+      --radius:10px;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--muted);
+    } */
+    html,body{height:100%; margin:0; background:linear-gradient(180deg,#071018 0%, #0b1720 100%); -webkit-font-smoothing:antialiased;}
+    .wrap{max-width:920px; margin:28px auto; padding:24px; background:var(--card); border-radius:12px; box-shadow:0 6px 30px rgba(0,0,0,0.6);}
+    header{display:flex; gap:12px; align-items:center; margin-bottom:18px;}
+    h1{color:var(--accent); margin:0; font-size:20px;}
+    p.lead{margin:6px 0 18px; color:#dfe9e6;}
+    section{background:var(--glass); padding:16px; border-radius:8px; margin-bottom:12px;}
+    h2{margin:0 0 8px 0; color:#fff; font-size:16px;}
+    table{width:100%; border-collapse:collapse; margin:10px 0;}
+    td,th{padding:8px 10px; text-align:left; border-bottom:1px dashed rgba(255,255,255,0.03); font-size:14px;}
+    th{color:var(--accent); font-weight:600;}
+    .kbd{background:#0b2b2b; border:1px solid rgba(255,255,255,0.03); padding:6px 8px; border-radius:6px; color:#bfe7b7; font-weight:600; font-size: 8px;}
+    .example{background:rgba(255,255,255,0.02); padding:10px; border-radius:6px; margin-top:8px; color:#e6f3df;}
+    pre{background:#071217; padding:10px; border-radius:8px; overflow:auto; color:#dff0d6; font-size:13px;}
+    .btn{display:inline-block; background:var(--accent); color:#071017; font-weight:700; padding:8px 12px; border-radius:8px; text-decoration:none; margin-top:8px;}
+    footer{font-size:13px; color:#9fb0a8; margin-top:10px;}
+    .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    @media(max-width:640px){ .form-grid{grid-template-columns:1fr;} .wrap{margin:12px; padding:16px;} }
+    .math{background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; font-weight:600; color:#fff; display:inline-block;}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div>
+        <h1>Справочник для студента — что и как вписывать в «Азимут-мастер»</h1>
+      </div>
+    </header>
+
+    <section aria-labelledby="concepts">
+      <h2 id="concepts">1. Основные понятия</h2>
+      <table>
+        <tr><th>Термин</th><th>Что это значит</th></tr>
+        <tr><td>Истинный азимут (ИА)</td><td>Направление относительно географического (истинного) меридиана.</td></tr>
+        <tr><td>Магнитный азимут (МА)</td><td>Направление относительно магнитного меридиана (что показывает компас).</td></tr>
+        <tr><td>Дирекционный угол (ДУ)</td><td>Направление относительно осевого/вертикального меридиана карты (топография/геодезия).</td></tr>
+        <tr><td>Склонение (δ)</td><td>Угол между истинным и магнитным меридианами. Может быть восточное (E) или западное (W).</td></tr>
+        <tr><td>Схождение меридианов (γ)</td><td>Угол между истинным и осевым (сеточным) меридианом карты.</td></tr>
+        <tr><td>Годовое изменение склонения (Δδ)</td><td>Сколько градусов/минут в год изменяется магнитное склонение (берётся с карты).</td></tr>
+      </table>
+    </section>
+
+    <section aria-labelledby="fields">
+      <h2 id="fields">2. Что вписывать в поля на сайте</h2>
+
+      <div class="form-grid">
+        <div>
+          <h3 style="margin:0 0 6px 0;">Магнитное склонение (на год, указанный на карте)</h3>
+          <p>Обычно в легенде карты указано: «Магнитное склонение на <span class="kbd">2017</span> = <span class="kbd">11°</span> восточное».</p>
+          <p>В форму вписываешь: <strong>Восточное (E)</strong>, затем <strong>11</strong>, и <strong>2017</strong> (год).</p>
+        </div>
+
+        <div>
+          <h3 style="margin:0 0 6px 0;">Годовое изменение склонения</h3>
+
+    <p>Берётся с карты (напр., <em>0° 08' восточное</em>). Можно ввести как градусы с десятичной дробью: 8' = 8/60 = 0.133°.</p>
+          <p>В форме: направление (E/W) и величина (в градусах, либо отдельно градусы и минуты если поле позволяет).</p>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <h3 style="margin:0 0 6px 0;">Схождение меридианов (γ)</h3>
+        <p>Ищется в легенде карты или внизу листа. Указывается как восточное (+) или западное (−). Если, например, γ = +0°30', можно ввести <span class="kbd">Восточное (+)</span> и <span class="kbd">0.5</span> (0.5°).</p>
+      </div>
+
+      <div style="margin-top:10px;">
+        <h3 style="margin:0 0 6px 0;">Год наблюдения</h3>
+        <p>Указываешь текущий год (например, <strong>2025</strong>) — тогда программа пересчитает магнитное склонение с учётом годового изменения.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="what-to-enter">
+      <h2 id="what-to-enter">3. Что выбирать перед вводом азимута</h2>
+      <p>Выбери, что ты задаёшь:</p>
+      <ul>
+        <li><strong>Истинный азимут (ИА)</strong> — если знаешь ИА и хочешь МА или ДУ.</li>
+        <li><strong>Магнитный азимут (МА)</strong> — если знаешь МА и хочешь ИА.</li>
+        <li><strong>Дирекционный угол (ДУ)</strong> — если работаешь с картой и нужен ДУ.</li>
+      </ul>
+
+      <div class="example">
+        <strong>Пример</strong><br>
+        Магнитное склонение: <em>Восточное, 11°, 2017</em>;<br>
+        Годовое изменение: <em>Восточное, 0°</em>;<br>
+        Схождение меридианов: <em>Восточное, 0°</em>;<br>
+        Год наблюдения: <em>2025</em>;<br>
+        Истинный азимут = <em>90°</em> → Результат сайта: <strong>МА = 77.3°</strong>.
+      </div>
+    </section>
+
+    <section aria-labelledby="formulas">
+      <h2 id="formulas">4. Формулы (для ручного расчёта)</h2>
+      <p>Запомни простые преобразования (знак меняется в зависимости от направления склонения/схождения):</p>
+
+      <table>
+        <tr><th>Задача</th><th>Формула</th></tr>
+        <tr><td>Из ИА получить МА (если склонение восточное)</td>
+            <td><span class="math">МА = ИА − δ</span></td></tr>
+        <tr><td>Из ИА получить МА (если склонение западное)</td>
+            <td><span class="math">МА = ИА + δ</span></td></tr>
+        <tr><td>Дирекционный угол (с учётом схождения γ, если γ восточное)</td>
+            <td><span class="math">ДУ = ИА − γ</span></td></tr>
+        <tr><td>Если γ западное</td>
+            <td><span class="math">ДУ = ИА + γ</span></td></tr>
+      </table>
+
+      <p style="margin-top:8px;">Важно: работать с градусами в диапазоне 0–360°. Если результат выходит вне диапазона — привести к 0–360 (например, −5° → 355°).</p>
+    </section>
+  </div>
+
+</body>
+</html>
+

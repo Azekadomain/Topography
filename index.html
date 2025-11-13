@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Учебная топография — меню</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/images/logo.png" type="image/png" />
+<style>
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo {
+    height: 50px;
+    width: 50px;
+  }
+
+  .meta {
+    text-align: right;
+    font-size: 0.95rem;
+    color: #dfd4d4;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-wrap">
+    <a href="home.html">
+      <img src="assets/images/logo.png" alt="Эмблема" class="logo" />
+    </a>
+    <h2>Учебная топография</h2>
+  </div>
+
+  <div class="meta">
+    <span id="last-result" aria-live="polite"></span>
+  </div>
+</header>
+
+<main class="container">
+  <section class="cards">
+    <article class="card" role="link" tabindex="0" onclick="location.href='lessons/index.html'">
+      <h2>Уроки</h2>
+      <p>Короткие теоретические материалы: топографические знаки, сокращения.</p>
+    </article>
+
+    <article class="card" role="link" tabindex="0" onclick="location.href='practice/index.html'">
+      <h2>Практика</h2>
+      <p>Интерактивные задания: координаты, масштаб, азимут.</p>
+    </article>
+
+    <article class="card" role="link" tabindex="0" onclick="location.href='quiz.html'">
+      <h2>Квиз</h2>
+      <p>Пройти общий тест для проверки знаний.</p>
+    </article>
+  </section>
+</main>
+
+<script src="js/main.js"></script>
+<footer class="site-footer">
+  <p>© 2025 Учебная топография</p>
+</footer>
+
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Азимут-мастер</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="icon" href="../assets/images/logo.png" type="image/png">
+<style>
+:root {
+   --bg: #0d1b0d;
+  --card: #1a2b1a;
+  --accent: #9acd32;
+  --accent-2: #6b8e23;
+  --muted: #a0a8a0;
+  --success: #4caf50;
+  --danger: #e53935;
+  --radius: 10px;
+  --pad: 18px;
+  --maxw: 1000px;
+  --ink: #f3f4f6;
+  --brand: #4b5320;
+  --brand-2: #6b8e23;
+  --ok: #10b981;
+  --err: #ef4444;
+  --shadow: 0 2px 6px rgba(0,0,0,0.5);
+  --border: #6b7280;
+}
+* { box-sizing: border-box; }
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: #e0e0e0;
+}
+header {
+  position: sticky; top: 0; z-index: 1;
+  background: #2f3b2f;
+  color: #fff; padding: 14px 16px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 2px solid var(--brand-2);
+}
+header h1 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 700;
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 2px solid var(--brand-2);
+}
+.label {
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: 12px;
+}
+.grid { display: grid; gap: 10px; }
+@media (min-width: 640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+.row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border);
+  background: #2f3b2f; color: var(--ink);
+  cursor: pointer; user-select: none;
+  
+}
+
+
+
+.chip input { display: none; }
+.chip.active {
+  gap: 15px;
+  border-color: var(--brand);
+  background: var(--brand-2);
+  color: #111827;
+}
+.chip .icon { font-size: 16px; }
+.field { display: grid; gap: 6px; }
+.field label {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 10px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  outline: none;
+  background: #1f2937;
+  color: var(--ink);
+  font-size: 15px;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(107,142,35,0.4);
+}
+.inline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px 90px;
+  gap: 8px;
+}
+.inline small { color: var(--muted); }
+.hint { color: var(--muted); font-size: 12px; }
+.result {
+  background: #2f3b2f;
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px dashed var(--brand-2);
+  display: grid;
+  gap: 4px;
+  color: #d1fae5;
+}
+.result .k { color: var(--muted); }
+.result .v { font-weight: 700; }
+.footer-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 10px; }
+.danger { color: var(--err); }
+.map-area {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  max-width: 1450px;
+  margin: 90px auto -60px auto;
+}
+.map-block {
+  flex: 1;
+  border: 2px solid var(--brand-2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #1a2b1a;
+  box-shadow: var(--shadow);
+}
+.map-block img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.map-area > div:nth-child(2) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+</style>
+</head>
+    <body>
+        <header class="site-header small">
+            <button class="back" onclick="location.href='index.html'">← Практика</button>
+            <h1>Азимут-мастер</h1>
+        </header>
+        <main class="map-area">
+            <div class="map-block">
+                <img src="../assets/images/map.png" alt="Карта местности" id="mapImage">
+                <section class="card grid" style="gap:12px">
+                  <button class="back" onclick="openSpr()">Справочник</button>
+                </section>
+            </div>
+
+            <div>
+                <section class="card grid" style="gap:10px">
+                    <div class="label">Параметры местности</div>
+                    <div class="grid grid-2">
+                        <div class="field">
+                            <label>Магнитное склонение (на базовый год)</label>
+                                <div class="row" style="gap:8px">
+                                    <select id="declEW">
+                                        <option value="+">Восточное (E)</option>
+                                        <option value="-">Западное (W)</option>
+                                    </select>
+                                    <input id="declDeg" type="number" min="0" step="1" value="11" placeholder="градусы">
+                                    <input id="declMin" type="number" min="0" max="59.9" step="1" value="0" placeholder="минуты">
+                                </div>
+                                <small class="hint">Например: В 11° 00′</small>
+                            </div>
+                            <div class="field">
+                                <label>Базовый год</label>
+                                    <input id="baseYear" type="number" value="2017">
+                            </div>
+                            <div class="field">
+                                <label>Годовое изменение склонения</label>
+                                    <div class="row" style="gap:8px">
+                                        <select id="rateEW">
+                                            <option value="+">Восточное (E)</option>
+                                            <option value="-">Западное (W)</option>
+                                        </select>
+                                        <input id="rateDeg" type="number" min="0" step="1" value="0" placeholder="градусы/год">
+                                        <input id="rateMin" type="number" min="0" max="59.9" step="1" value="13" placeholder="мин/год">
+                                    </div>
+                                    <small class="hint">Направление «В/З» показывает, в какую сторону ежегодно смещается склонение.</small>
+                            </div>
+                            <div class="field">
+                                <label>Схождение меридианов (γ)</label>
+                                    <div class="row" style="gap:8px">
+                                        <select id="convEW">
+                                            <option value="+">Восточное (+)</option>
+                                            <option value="-">Западное (−)</option>
+                                        </select>
+                                        <input id="convDeg" type="number" min="0" step="1" value="0" placeholder="градусы">
+                                        <input id="convMin" type="number" min="0" max="59.9" step="1" value="0" placeholder="минуты">
+                                    </div>
+                                    <small class="hint">ДУ = ИА + γ</small>
+                            </div>
+                            <div class="field">
+                                <label>Год наблюдения</label>
+                                    <input id="obsYear" type="number" value="">
+                                    <small class="hint">По умолчанию — текущий год.</small>
+                            </div>
+                    </div>
+                </section>
+                <section class="card grid" style="gap:12px">
+                    <div class="label">Что задаёте?</div>
+                    <div class="row" id="modeRow">
+                        <div class="space">
+                            <label class="chip active" data-mode="true">
+                                <span class="icon">⭐</span> Истинный азимут (ИА)
+                            </label></div>
+                        <div>
+                            <label class="chip" data-mode="mag">
+                                <span class="icon">🧲</span> Магнитный азимут (МА)
+                            </label></div>
+                        <div>
+                            <label class="chip" data-mode="dir">
+                                <span class="icon">📏</span> Дирекционный угол (ДУ)
+                            </label></div>
+                        </div>
+                        <div class="field" id="inputField">
+                            <label id="inputLabel">Истинный азимут, °</label>
+                            <input id="inputAz" type="number" value="90" step="0.1" min="0" max="360">
+                            <small class="hint">Диапазон 0–360°. Десятые можно вводить через точку.</small>
+                        </div>
+                        <div class="result" id="outBox">
+                            <div><span class="k">Магнитный азимут:</span> <span class="v" id="outMag">—</span></div>
+                            <div><span class="k">Истинный азимут:</span> <span class="v" id="outTrue">—</span></div>
+                            <div><span class="k">Дирекционный угол:</span> <span class="v" id="outDir">—</span></div>
+                        </div>
+                </section>
+            </div>
+        </main>
+        <!-- <script>
+            const $ = id => document.getElementById(id);
+            const degMinToDec = (d,m,s=0)=> (Number(d)||0)+(Number(m)||0)/60+(Number(s)||0)/3600;
+            const decToDMS = val => {val=((val%360)+360)%360;const d=Math.floor(val);const m=Math.floor((val-d)*60);const s=((val-d-m/60)*3600).toFixed(1);return `${d}° ${m}′ ${s}″`};
+            const signed = (sign,v)=> (sign==='-'?-1:1)*v;
+            const clamp360 = x => ((x%360)+360)%360;
+            const now = new Date().getFullYear();
+            $('obsYear').value = now;
+            let mode='true';
+            document.querySelectorAll('#modeRow .chip').forEach(ch=>{
+            ch.addEventListener('click',()=>{
+            document.querySelectorAll('#modeRow .chip').forEach(c=>c.classList.remove('active'));
+            ch.classList.add('active');
+            mode = ch.dataset.mode;
+            const field = $('inputField');
+            field.innerHTML='';
+            if(mode==='dir'){
+                field.innerHTML=`<label id="inputLabel">Дирекционный угол</label><div class="row"><input id="dirDeg" type="number" min="0" max="359" value="90">°<input id="dirMin" type="number" min="0" max="59" value="0">′<input id="dirSec" type="number" min="0" max="59.9" value="0">″</div><small class="hint">Введите градусы, минуты и секунды (0–359°).</small>`;
+            } else {
+                field.innerHTML=`<label id="inputLabel">${mode==='true'?'Истинный азимут, °':'Магнитный азимут, °'}</label><input id="inputAz" type="number" value="90" step="0.1" min="0" max="360"><small class="hint">Диапазон 0–360°. Десятые можно вводить через точку.</small>`;
+            }
+            compute();
+            });
+            });
+            document.addEventListener('input', e=>{if(e.target.closest('main')) compute();});
+            function currentDeclination(){const D0=signed($('declEW').value,degMinToDec($('declDeg').value,$('declMin').value));const rate=signed($('rateEW').value,degMinToDec($('rateDeg').value,$('rateMin').value));const baseY=Number($('baseYear').value)||now;const obsY=Number($('obsYear').value)||now;const years=obsY-baseY;return D0+rate*years;}
+            function meridianConvergence(){return signed($('convEW').value,degMinToDec($('convDeg').value,$('convMin').value));}
+            function compute(){const D=currentDeclination(),g=meridianConvergence();let IA,MA,DU,val;if(mode==='dir'){val=degMinToDec($('dirDeg')?.value,$('dirMin')?.value,$('dirSec')?.value);DU=val;IA=DU-g;MA=IA-D;} else {val=Number($('inputAz')?.value);if(Number.isNaN(val)) return;if(mode==='true'){IA=val;MA=IA-D;DU=IA+g;} else {MA=val;IA=MA+D;DU=IA+g;}}$('outMag').textContent=`${clamp360(MA).toFixed(1)}°`;$('outTrue').textContent=`${clamp360(IA).toFixed(1)}°`;$('outDir').textContent=decToDMS(DU);}
+            compute();
+
+            let sprWindow = null;
+
+            function openSpr() {
+              if (sprWindow && !sprWindow.closed) {
+                sprWindow.focus();
+              } else {
+                sprWindow = window.open('spr.html', 'sprWindow');
+              }
+            }
+
+        </script> -->
+
+        <script>
+            const $ = id => document.getElementById(id);
+            const degMinToDec = (d, m, s = 0) => (Number(d) || 0) + (Number(m) || 0) / 60 + (Number(s) || 0) / 3600;
+            const decToDMS = val => {
+              val = ((val % 360) + 360) % 360;
+              const d = Math.floor(val);
+              const m = Math.floor((val - d) * 60);
+              const s = ((val - d - m / 60) * 3600).toFixed(1);
+              return `${d}° ${m}′ ${s}″`;
+            };
+            const signed = (sign, v) => (sign === '-' ? -1 : 1) * v;
+            const clamp360 = x => ((x % 360) + 360) % 360;
+            const now = new Date().getFullYear();
+
+            $('obsYear').value = now;
+            let mode = 'true';
+
+            document.querySelectorAll('#modeRow .chip').forEach(ch => {
+              ch.addEventListener('click', () => {
+                document.querySelectorAll('#modeRow .chip').forEach(c => c.classList.remove('active'));
+                ch.classList.add('active');
+                mode = ch.dataset.mode;
+
+                const field = $('inputField');
+                field.innerHTML = '';
+
+                if (mode === 'dir') {
+                  field.innerHTML = `
+                    <label id="inputLabel">Дирекционный угол</label>
+                    <div class="row">
+                      <input id="dirDeg" type="number" min="0" max="359" value="90">°
+                      <input id="dirMin" type="number" min="0" max="59" value="0">′
+                      <input id="dirSec" type="number" min="0" max="59.9" value="0">″
+                    </div>
+                    <small class="hint">Введите градусы, минуты и секунды (0–359°).</small>`;
+                } else {
+                  field.innerHTML = `
+                    <label id="inputLabel">${mode === 'true' ? 'Истинный азимут, °' : 'Магнитный азимут, °'}</label>
+                    <input id="inputAz" type="number" value="90" step="0.1" min="0" max="360">
+                    <small class="hint">Диапазон 0–360°. Десятые можно вводить через точку.</small>`;
+                }
+                compute();
+              });
+            });
+
+            document.addEventListener('input', e => {
+              if (e.target.closest('main')) compute();
+            });
+
+            function currentDeclination() {
+              const D0 = signed($('declEW').value, degMinToDec($('declDeg').value, $('declMin').value));
+              const rate = signed($('rateEW').value, degMinToDec($('rateDeg').value, $('rateMin').value));
+              const baseY = Number($('baseYear').value) || now;
+              const obsY = Number($('obsYear').value) || now;
+              const years = obsY - baseY;
+              return D0 + rate * years;
+            }
+
+            function meridianConvergence() {
+              return signed($('convEW').value, degMinToDec($('convDeg').value, $('convMin').value));
+            }
+
+            function compute() {
+              const D = currentDeclination();
+              const g = meridianConvergence();
+              let IA, MA, DU, val;
+
+              if (mode === 'dir') {
+                val = degMinToDec($('dirDeg')?.value, $('dirMin')?.value, $('dirSec')?.value);
+                DU = val;
+                IA = DU - g;
+                MA = IA - D;
+              } else {
+                val = Number($('inputAz')?.value);
+                if (Number.isNaN(val)) return;
+                if (mode === 'true') {
+                  IA = val;
+                  MA = IA - D;
+                  DU = IA + g;
+                } else {
+                  MA = val;
+                  IA = MA + D;
+                  DU = IA + g;
+                }
+              }
+
+              $('outMag').textContent = `${clamp360(MA).toFixed(1)}°`;
+              $('outTrue').textContent = `${clamp360(IA).toFixed(1)}°`;
+              $('outDir').textContent = decToDMS(DU);
+            }
+
+            compute();
+
+            let sprWindow = null;
+
+            function openSpr() {
+              const url = 'spr.html';
+              const name = 'sprWindow';
+              const features = 'width=900,height=700,resizable=yes,scrollbars=yes';
+
+              if (sprWindow && !sprWindow.closed) {
+                sprWindow.focus();
+                return;
+              }
+
+              sprWindow = window.open(url, name, features);
+
+         
+            }
+
+            
+
+
+
+      </script>
+
+    </body>
+</html>

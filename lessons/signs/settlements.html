@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Населённые пункты — Топографические знаки</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/images/logo.png" type="image/png">
+  <style>
+
+    .section {margin-bottom: 15px;}
+
+
+    .section-header {
+      padding: 10px;
+      font-weight: bold;
+      border-bottom: 2px solid #9acd32;
+      margin-bottom: 8px;
+      padding-top: 19px;
+    }
+
+
+    .section-content {display: block;}
+
+
+    .image-item {
+      display: inline-block;
+      width: 30%;
+      margin: 10px;
+      vertical-align: top;
+      text-align: center;
+    }
+    .image-item img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    .image-item p {
+      margin-top: 8px;
+      text-align: left;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header small">
+    <button class="back" onclick="location.href='index.html'">← Назад к разделам</button>
+    <h1>Населённые пункты</h1>
+  </header>
+
+  <main class="container">
+    <article>
+      <div class="section">
+        <div class="section-header">Кварталы</div>
+        <div class="section-content">
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_0.png">
+              <p>Кварталы с преобладанием огнестойких строений</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_1.png">
+              <p>Кварталы с преобладанием неогнестойких строений</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_2.png">
+              <p>Разрушенные и полуразрушенные кварталы</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_3.png">
+              <p>Непроезжие участки улиц (только на карте масштаба 1:25000)</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_7.png">
+              <p>Жилые и нежилые строения в кварталах, в населённых пунктах с бессистемной застройкой, а также отдельно расположенные строения</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_8.png">
+              <p>Выдающиеся огнестойкие строения</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_9.png">
+              <p>Отдельно расположенные дворы</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_10.png">
+              <p>Разрушенные и полуразрушенные строения</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_11.png">
+              <p>Церковь</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_12.png">
+              <p>Церковь, мечеть, часовни и др. молельные дома</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_13.png">
+              <p>Стоянки юрт, чумов и т.п.</p>
+            </div>
+        </div>
+
+      </div>
+            <div class="section">
+        <div class="section-header">Тунели</div>
+        <div class="section-content">
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_4.png">
+              <p>Туннели на улицах для движения транспорта</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_5.png">
+              <p>Эстакады на улицах для движения транспорта</p>
+            </div>
+            <div class="image-item">
+              <img src="../../assets/images/settlements_img/topo_w_6.png">
+              <p>Подземные переходы</p>
+            </div>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <script>
+    document.querySelectorAll('.section-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+      });
+    });
+  </script>
+</body>
+</html>
